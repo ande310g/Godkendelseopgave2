@@ -1,4 +1,4 @@
-// ChangeInfo.js
+// Importer nødvendige biblioteker og komponenter
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet, Switch, Image, FlatList, Alert, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -10,6 +10,7 @@ import DismissKeyboardWrapper from '../Components/DismissKeyboardWrapper';
 import { globalStyles } from './styles';
 
 const ChangeInfo = ({ navigation }) => {
+    // State variabler til at håndtere brugerens data
     const [name, setName] = useState('');
     const [age, setAge] = useState('');
     const [hasPlace, setHasPlace] = useState(false);
@@ -18,6 +19,7 @@ const ChangeInfo = ({ navigation }) => {
     const [selectedImages, setSelectedImages] = useState([]);
     const [uploading, setUploading] = useState(false);
 
+    // Hent brugerdata fra Firebase når komponenten loader
     useEffect(() => {
         const user = auth.currentUser;
         if (user) {
@@ -35,10 +37,11 @@ const ChangeInfo = ({ navigation }) => {
         }
     }, []);
 
+    // Funktion til at vælge billede fra brugerens galleri
     const pickImage = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!permissionResult.granted) {
-            alert("Permission to access photo roll is required!");
+            alert("Tilladelse til at få adgang til fotos er påkrævet!");
             return;
         }
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -50,14 +53,16 @@ const ChangeInfo = ({ navigation }) => {
         if (!result.canceled && result.assets.length <= 5) {
             setSelectedImages((prevImages) => [...prevImages, ...result.assets.map(asset => asset.uri)]);
         } else if (result.assets.length > 5) {
-            Alert.alert('Error', 'You can select a maximum of 5 images.');
+            Alert.alert('Fejl', 'Du kan vælge maksimalt 5 billeder.');
         }
     };
 
+    // Funktion til at slette et valgt billede
     const deleteImage = (imageUri) => {
         setSelectedImages((prevImages) => prevImages.filter(img => img !== imageUri));
     };
 
+    // Funktion til at komprimere billedet før upload
     const compressImage = async (uri) => {
         const manipulatedImage = await ImageManipulator.manipulateAsync(
             uri,
@@ -67,6 +72,7 @@ const ChangeInfo = ({ navigation }) => {
         return manipulatedImage.uri;
     };
 
+    // Upload et billede til Firebase Storage
     const uploadImageToStorage = async (imageUri) => {
         const response = await fetch(imageUri);
         const blob = await response.blob();
@@ -76,8 +82,9 @@ const ChangeInfo = ({ navigation }) => {
         return await getDownloadURL(storageReference);
     };
 
+    // Funktion til batch-upload af billeder
     const uploadBatchedImages = async (imageUris) => {
-        const batchSize = 2;
+        const batchSize = 2;  // Antal billeder uploadet ad gangen
         let batchIndex = 0;
         const uploadedUrls = [];
         while (batchIndex < imageUris.length) {
@@ -93,6 +100,7 @@ const ChangeInfo = ({ navigation }) => {
         return uploadedUrls;
     };
 
+    // Funktion til at håndtere data og billede-upload ved submit
     const handleSubmit = async () => {
         const user = auth.currentUser;
         if (user) {
@@ -122,6 +130,7 @@ const ChangeInfo = ({ navigation }) => {
         }
     };
 
+    // Render hvert billede i gitteret
     const renderImageItem = ({ item }) => (
         <View style={globalStyles.imageContainer}>
             <Image source={{ uri: item }} style={globalStyles.image} />
@@ -131,6 +140,7 @@ const ChangeInfo = ({ navigation }) => {
         </View>
     );
 
+    // Render funktion til komponent
     return (
         <DismissKeyboardWrapper>
             <View style={globalStyles.container}>
@@ -148,7 +158,7 @@ const ChangeInfo = ({ navigation }) => {
                     style={globalStyles.input}
                 />
 
-                {/* Updated Switch Block */}
+                {/* Skift-knap til at vælge boligstatus */}
                 <View style={styles.switchContainer}>
                     <Text style={styles.switchLabel}>Leder du et værelse og leder efter en bofælle eller leder du efter et sted at bo?</Text>
                     <View style={styles.switchRow}>
@@ -199,6 +209,7 @@ const ChangeInfo = ({ navigation }) => {
     );
 };
 
+// Stilarter for knapper og tekst
 const styles = StyleSheet.create({
     switchContainer: {
         marginVertical: 20,

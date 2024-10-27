@@ -6,29 +6,31 @@ import { ref, onValue } from 'firebase/database';
 import { globalStyles } from './styles';
 
 const ListingView = ({ navigation }) => {
-    const [listingInfo, setListingInfo] = useState({});
-    const [images, setImages] = useState([]);
+    const [listingInfo, setListingInfo] = useState({}); // State til at gemme opslagets informationer
+    const [images, setImages] = useState([]); // State til at gemme billeder tilknyttet opslaget
 
     useEffect(() => {
         const user = auth.currentUser;
         if (user) {
-            const listingRef = ref(database, 'users/' + user.uid + '/residenceInfo');
+            const listingRef = ref(database, 'users/' + user.uid + '/residenceInfo'); // Reference til brugerens opslag i databasen
             onValue(listingRef, (snapshot) => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
-                    setListingInfo(data);
-                    setImages(data.images || []);
+                    setListingInfo(data); // Sætter opslagets informationer
+                    setImages(data.images || []); // Sætter billeder tilknyttet opslaget
                 }
             });
         }
     }, []);
 
+    // Funktion til at logge brugeren ud
     const handleLogout = () => {
         auth.signOut()
-            .then(() => navigation.navigate('Velkommen'))
-            .catch(error => console.error('Logout error:', error));
+            .then(() => navigation.navigate('Velkommen')) // Navigerer til 'Velkommen' efter logout
+            .catch(error => console.error('Logout error:', error)); // Logger eventuelle fejl ved logout
     };
 
+    // Render funktion til et enkelt billede i gitteret
     const renderImageItem = ({ item }) => (
         <View style={globalStyles.imageContainer}>
             <Image source={{ uri: item }} style={globalStyles.image} />
@@ -48,9 +50,9 @@ const ListingView = ({ navigation }) => {
             {images.length > 0 && (
                 <FlatList
                     data={images}
-                    renderItem={renderImageItem}
+                    renderItem={renderImageItem} // Renderer hvert billede i gitteret
                     keyExtractor={(item, index) => index.toString()}
-                    numColumns={3}
+                    numColumns={3} // Viser billederne i tre kolonner
                     style={globalStyles.grid}
                 />
             )}

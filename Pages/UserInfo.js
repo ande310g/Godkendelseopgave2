@@ -10,14 +10,15 @@ import DismissKeyboardWrapper from '../Components/DismissKeyboardWrapper';
 import { globalStyles } from './styles';
 
 const UserInfo = ({ navigation }) => {
-    const [name, setName] = useState('');
-    const [age, setAge] = useState('');
-    const [hasPlace, setHasPlace] = useState(false);
-    const [bio, setBio] = useState('');
-    const [error, setError] = useState('');
-    const [selectedImages, setSelectedImages] = useState([]);
-    const [uploading, setUploading] = useState(false);
+    const [name, setName] = useState(''); // State til navn
+    const [age, setAge] = useState(''); // State til alder
+    const [hasPlace, setHasPlace] = useState(false); // State til boligstatus
+    const [bio, setBio] = useState(''); // State til bio
+    const [error, setError] = useState(''); // State til fejlbesked
+    const [selectedImages, setSelectedImages] = useState([]); // State til valgte billeder
+    const [uploading, setUploading] = useState(false); // State til upload-status
 
+    // Funktion til at vælge billeder fra biblioteket
     const pickImage = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!permissionResult.granted) {
@@ -38,6 +39,7 @@ const UserInfo = ({ navigation }) => {
         }
     };
 
+    // Komprimerer billede for optimeret lagring
     const compressImage = async (uri) => {
         const manipulatedImage = await ImageManipulator.manipulateAsync(
             uri,
@@ -47,6 +49,7 @@ const UserInfo = ({ navigation }) => {
         return manipulatedImage.uri;
     };
 
+    // Upload et enkelt billede til Firebase Storage og hent download-URL'en
     const uploadImageToStorage = async (imageUri) => {
         const response = await fetch(imageUri);
         const blob = await response.blob();
@@ -56,6 +59,7 @@ const UserInfo = ({ navigation }) => {
         return await getDownloadURL(storageReference);
     };
 
+    // Upload billeder i batches
     const uploadBatchedImages = async (imageUris) => {
         const batchSize = 2;
         let batchIndex = 0;
@@ -74,6 +78,7 @@ const UserInfo = ({ navigation }) => {
         return uploadedUrls;
     };
 
+    // Funktion til at håndtere indsendelse af data
     const handleSubmit = async () => {
         const user = auth.currentUser;
 
@@ -108,6 +113,7 @@ const UserInfo = ({ navigation }) => {
         }
     };
 
+    // Render funktion til et enkelt billede i gitteret
     const renderImageItem = ({ item }) => (
         <View style={globalStyles.imageContainer}>
             <Image source={{ uri: item }} style={globalStyles.image} />
@@ -119,19 +125,19 @@ const UserInfo = ({ navigation }) => {
             <View style={globalStyles.container}>
                 <TextInput
                     placeholder="Navn"
-                    value={name}
-                    onChangeText={setName}
+                    value={name} // Input til navn
+                    onChangeText={setName} // Opdaterer navn state
                     style={globalStyles.input}
                 />
                 <TextInput
                     placeholder="Alder"
-                    value={age}
-                    onChangeText={setAge}
+                    value={age} // Input til alder
+                    onChangeText={setAge} // Opdaterer alder state
                     keyboardType="number-pad"
                     style={globalStyles.input}
                 />
 
-                {/* Enhanced Switch Block */}
+                {/* Switch for boligstatus */}
                 <View style={styles.switchContainer}>
                     <Text style={styles.switchLabel}>Leder du et værelse og leder efter en bofælle eller leder du efter et sted at bo?</Text>
                     <View style={styles.switchRow}>
@@ -148,8 +154,8 @@ const UserInfo = ({ navigation }) => {
 
                 <TextInput
                     placeholder="Fortæl os omkring dig selv"
-                    value={bio}
-                    onChangeText={setBio}
+                    value={bio} // Input til bio
+                    onChangeText={setBio} // Opdaterer bio state
                     style={globalStyles.input}
                     multiline
                 />
@@ -161,9 +167,9 @@ const UserInfo = ({ navigation }) => {
                 {selectedImages.length > 0 && (
                     <FlatList
                         data={selectedImages}
-                        renderItem={renderImageItem}
+                        renderItem={renderImageItem} // Renderer hvert billede i gitteret
                         keyExtractor={(item, index) => index.toString()}
-                        numColumns={3}
+                        numColumns={3} // Viser billederne i tre kolonner
                         style={globalStyles.grid}
                     />
                 )}
@@ -172,7 +178,7 @@ const UserInfo = ({ navigation }) => {
 
                 <TouchableOpacity
                     style={[globalStyles.button, { backgroundColor: uploading ? '#aaa' : '#007bff' }]}
-                    onPress={handleSubmit}
+                    onPress={handleSubmit} // Håndterer indsendelse af data
                     disabled={uploading}
                 >
                     <Text style={globalStyles.buttonText}>{uploading ? "Uploader..." : "Indsend"}</Text>

@@ -8,25 +8,26 @@ import DismissKeyboardWrapper from '../Components/DismissKeyboardWrapper';
 import { globalStyles } from "./styles";
 
 const Login = ({ navigation }) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [email, setEmail] = useState(''); // State til at gemme email-input
+    const [password, setPassword] = useState(''); // State til at gemme password-input
+    const [error, setError] = useState(''); // State til at gemme fejlbesked
 
+    // Funktion til at håndtere login
     const handleLogin = () => {
         signInWithEmailAndPassword(auth, email, password)
             .then(async (userCredential) => {
                 const user = userCredential.user;
-                const userRef = ref(database, 'users/' + user.uid);
+                const userRef = ref(database, 'users/' + user.uid); // Reference til brugerens data i databasen
                 const snapshot = await get(userRef);
 
                 if (snapshot.exists()) {
-                    navigation.navigate('Hjem');
+                    navigation.navigate('Hjem'); // Navigerer til 'Hjem', hvis brugeren findes
                 } else {
-                    navigation.navigate('Info');
+                    navigation.navigate('Info'); // Navigerer til 'Info', hvis brugeren ikke findes
                 }
             })
             .catch((error) => {
-                setError(error.message);
+                setError(error.message); // Sætter fejlbesked, hvis login mislykkes
             });
     };
 
@@ -36,18 +37,18 @@ const Login = ({ navigation }) => {
                 <Text style={globalStyles.title}>Log In</Text>
                 <TextInput
                     placeholder="Email"
-                    value={email}
-                    onChangeText={setEmail}
+                    value={email} // Email input fra brugeren
+                    onChangeText={setEmail} // Opdaterer email state
                     style={globalStyles.input}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
+                    keyboardType="email-address" // Angiver tastaturtypen som e-mail
+                    autoCapitalize="none" // Undgår automatisk store bogstaver
                 />
                 <TextInput
                     placeholder="Password"
-                    value={password}
-                    onChangeText={setPassword}
+                    value={password} // Password input fra brugeren
+                    onChangeText={setPassword} // Opdaterer password state
                     style={globalStyles.input}
-                    secureTextEntry
+                    secureTextEntry // Skjuler password-input
                 />
                 {error ? <Text style={globalStyles.errorText}>{error}</Text> : null}
 

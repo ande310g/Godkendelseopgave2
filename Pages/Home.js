@@ -8,29 +8,31 @@ import { useNavigation } from '@react-navigation/native';
 import { globalStyles } from './styles';
 
 const Home = () => {
-    const [userInfo, setUserInfo] = useState({});
-    const [loading, setLoading] = useState(true);
-    const navigation = useNavigation();
+    const [userInfo, setUserInfo] = useState({}); // State til at gemme brugerens informationer
+    const [loading, setLoading] = useState(true); // State til at spore indlæsningsstatus
+    const navigation = useNavigation(); // Hook til navigation
 
     useEffect(() => {
         const user = auth.currentUser;
         if (user) {
-            const userRef = ref(database, 'users/' + user.uid);
+            const userRef = ref(database, 'users/' + user.uid); // Reference til brugerens data i databasen
             onValue(userRef, (snapshot) => {
                 if (snapshot.exists()) {
-                    setUserInfo(snapshot.val());
+                    setUserInfo(snapshot.val()); // Sætter brugerens data, hvis de findes
                 }
-                setLoading(false);
+                setLoading(false); // Angiver, at indlæsningen er færdig
             });
         }
     }, []);
 
+    // Funktion til at logge brugeren ud
     const handleLogout = () => {
         signOut(auth)
-            .then(() => navigation.replace('Velkommen'))
-            .catch((error) => console.error('Fejl under logout:', error));
+            .then(() => navigation.replace('Velkommen')) // Navigerer til 'Velkommen' efter logout
+            .catch((error) => console.error('Fejl under logout:', error)); // Logger fejl ved logout
     };
 
+    // Viser en indlæsningsskærm, hvis data er under indlæsning
     if (loading) {
         return (
             <View style={globalStyles.container}>
@@ -52,7 +54,7 @@ const Home = () => {
 
             <TouchableOpacity
                 style={globalStyles.button}
-                onPress={() => navigation.navigate('Skift info')}
+                onPress={() => navigation.navigate('Skift info')} // Navigerer til siden for at ændre brugerinfo
             >
                 <Text style={globalStyles.buttonText}>Ændre info omkring dig</Text>
             </TouchableOpacity>

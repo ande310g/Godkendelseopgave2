@@ -7,19 +7,20 @@ import DismissKeyboardWrapper from '../Components/DismissKeyboardWrapper';
 import { globalStyles } from './styles';
 
 const Signup = ({ navigation }) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [email, setEmail] = useState(''); // State til at gemme email-input
+    const [password, setPassword] = useState(''); // State til at gemme password-input
+    const [error, setError] = useState(''); // State til at gemme fejlbesked
 
+    // Funktion til at håndtere tilmelding
     const handleSignUp = () => {
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
-                console.log('User registered: ', user);
-                navigation.navigate('Info');
+                console.log('User registered: ', user); // Logger oplysninger om registreret bruger
+                navigation.navigate('Info'); // Navigerer til 'Info' efter vellykket tilmelding
             })
             .catch((error) => {
-                setError(error.message);
+                setError(error.message); // Sætter fejlbesked, hvis tilmelding mislykkes
             });
     };
 
@@ -28,18 +29,18 @@ const Signup = ({ navigation }) => {
             <View style={globalStyles.container}>
                 <TextInput
                     placeholder="Email"
-                    value={email}
-                    onChangeText={setEmail}
+                    value={email} // Email input fra brugeren
+                    onChangeText={setEmail} // Opdaterer email state
                     style={globalStyles.input}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
+                    keyboardType="email-address" // Angiver tastaturtypen som e-mail
+                    autoCapitalize="none" // Undgår automatisk store bogstaver
                 />
                 <TextInput
                     placeholder="Adgangskode"
-                    value={password}
-                    onChangeText={setPassword}
+                    value={password} // Password input fra brugeren
+                    onChangeText={setPassword} // Opdaterer password state
                     style={globalStyles.input}
-                    secureTextEntry
+                    secureTextEntry // Skjuler password-input
                 />
                 {error ? <Text style={globalStyles.errorText}>{error}</Text> : null}
 

@@ -10,13 +10,13 @@ import { globalStyles } from './styles';
 import DismissKeyboardWrapper from "../Components/DismissKeyboardWrapper";
 
 const ImagePickerScreen = ({ navigation }) => {
-    const [selectedImages, setSelectedImages] = useState([]);
-    const [uploading, setUploading] = useState(false);
-    const [address, setAddress] = useState('');
-    const [roomSize, setRoomSize] = useState('');
-    const [price, setPrice] = useState('');
+    const [selectedImages, setSelectedImages] = useState([]); // State til at gemme valgte billeder
+    const [uploading, setUploading] = useState(false); // State til at spore upload-status
+    const [address, setAddress] = useState(''); // State til adresse
+    const [roomSize, setRoomSize] = useState(''); // State til værelsesstørrelse
+    const [price, setPrice] = useState(''); // State til pris
 
-    // Function to pick multiple images from the photo library
+    // Funktion til at vælge flere billeder fra billedbiblioteket
     const pickImage = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!permissionResult.granted) {
@@ -37,7 +37,7 @@ const ImagePickerScreen = ({ navigation }) => {
         }
     };
 
-    // Compress image to optimize storage usage
+    // Komprimerer billede for at optimere lagring
     const compressImage = async (uri) => {
         const manipulatedImage = await ImageManipulator.manipulateAsync(
             uri,
@@ -47,7 +47,7 @@ const ImagePickerScreen = ({ navigation }) => {
         return manipulatedImage.uri;
     };
 
-    // Upload a single image to Firebase Storage and get the download URL
+    // Upload et enkelt billede til Firebase Storage og hent download-URL'en
     const uploadImageToStorage = async (imageUri) => {
         const response = await fetch(imageUri);
         const blob = await response.blob();
@@ -57,7 +57,7 @@ const ImagePickerScreen = ({ navigation }) => {
         return await getDownloadURL(storageReference);
     };
 
-    // Upload images in batches
+    // Upload billeder i batches
     const uploadBatchedImages = async (imageUris) => {
         const batchSize = 2;
         let batchIndex = 0;
@@ -76,24 +76,24 @@ const ImagePickerScreen = ({ navigation }) => {
         return uploadedUrls;
     };
 
-    // Save all data to Firebase
+    // Gem alle data til Firebase
     const handleSaveData = async () => {
         const user = auth.currentUser;
 
         if (user) {
             setUploading(true);
             try {
-                // Upload images and get URLs
+                // Upload billeder og hent URLs
                 const imageUrls = await uploadBatchedImages(selectedImages);
 
-                // Save residence information and images in Firebase
+                // Gem boliginformation og billeder i Firebase
                 const userRef = ref(database, `users/${user.uid}/residenceInfo`);
                 await update(userRef, {
                     images: imageUrls,
                     address,
                     roomSize,
                     price,
-                    timestamp: Date.now()  // optional: to keep track of when it was saved
+                    timestamp: Date.now() // Valgfri: til at spore, hvornår det blev gemt
                 });
 
                 Alert.alert("Success", "Listing saved successfully!");
@@ -107,7 +107,7 @@ const ImagePickerScreen = ({ navigation }) => {
         }
     };
 
-    // Render image grid
+    // Render billede-gitter
     const renderImageItem = ({ item }) => (
         <View style={globalStyles.imageContainer}>
             <Image source={{ uri: item }} style={globalStyles.image} />
@@ -117,52 +117,52 @@ const ImagePickerScreen = ({ navigation }) => {
     return (
         <DismissKeyboardWrapper>
             <View style={globalStyles.container}>
-            <Text style={globalStyles.title}>Tilføj detaljer angående boligen</Text>
-            <TextInput
-                placeholder="Address"
-                value={address}
-                onChangeText={setAddress}
-                style={globalStyles.input}
-            />
-            <TextInput
-                placeholder="Værelses størrelse (kvadrat meter)"
-                value={roomSize}
-                onChangeText={setRoomSize}
-                keyboardType="numeric"
-                style={globalStyles.input}
-            />
-            <TextInput
-                placeholder="Pris (DKK)"
-                value={price}
-                onChangeText={setPrice}
-                keyboardType="numeric"
-                style={globalStyles.input}
-            />
-
-            <TouchableOpacity style={globalStyles.button} onPress={pickImage}>
-                <Text style={globalStyles.buttonText}>Vælg billeder</Text>
-            </TouchableOpacity>
-
-            {selectedImages.length > 0 && (
-                <FlatList
-                    data={selectedImages}
-                    renderItem={renderImageItem}
-                    keyExtractor={(item, index) => index.toString()}
-                    numColumns={3}
-                    style={globalStyles.grid}
+                <Text style={globalStyles.title}>Tilføj detaljer angående boligen</Text>
+                <TextInput
+                    placeholder="Address"
+                    value={address}
+                    onChangeText={setAddress}
+                    style={globalStyles.input}
                 />
-            )}
+                <TextInput
+                    placeholder="Værelses størrelse (kvadrat meter)"
+                    value={roomSize}
+                    onChangeText={setRoomSize}
+                    keyboardType="numeric"
+                    style={globalStyles.input}
+                />
+                <TextInput
+                    placeholder="Pris (DKK)"
+                    value={price}
+                    onChangeText={setPrice}
+                    keyboardType="numeric"
+                    style={globalStyles.input}
+                />
 
-            {selectedImages.length > 0 && (
-                <TouchableOpacity
-                    style={[globalStyles.button, { backgroundColor: uploading ? '#aaa' : '#007bff' }]}
-                    onPress={handleSaveData}
-                    disabled={uploading}
-                >
-                    <Text style={globalStyles.buttonText}>{uploading ? "Oploader..." : "Indsend"}</Text>
+                <TouchableOpacity style={globalStyles.button} onPress={pickImage}>
+                    <Text style={globalStyles.buttonText}>Vælg billeder</Text>
                 </TouchableOpacity>
-            )}
-        </View>
+
+                {selectedImages.length > 0 && (
+                    <FlatList
+                        data={selectedImages}
+                        renderItem={renderImageItem}
+                        keyExtractor={(item, index) => index.toString()}
+                        numColumns={3}
+                        style={globalStyles.grid}
+                    />
+                )}
+
+                {selectedImages.length > 0 && (
+                    <TouchableOpacity
+                        style={[globalStyles.button, { backgroundColor: uploading ? '#aaa' : '#007bff' }]}
+                        onPress={handleSaveData}
+                        disabled={uploading}
+                    >
+                        <Text style={globalStyles.buttonText}>{uploading ? "Oploader..." : "Indsend"}</Text>
+                    </TouchableOpacity>
+                )}
+            </View>
         </DismissKeyboardWrapper>
 
     );
