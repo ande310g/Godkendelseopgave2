@@ -1,3 +1,5 @@
+//Dele af denne kode er lavet med generativ AI
+
 // Importer nødvendige biblioteker og komponenter
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet, Switch, Image, FlatList, Alert, TouchableOpacity } from 'react-native';

@@ -1,4 +1,5 @@
-// ImagePicker.js
+//Dele af denne kode er lavet med generativ AI
+
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, Alert, Image, FlatList, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';

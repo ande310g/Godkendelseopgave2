@@ -1,4 +1,5 @@
-// SignupPage.js
+//Dele af denne kode er lavet med generativ AI
+
 import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';

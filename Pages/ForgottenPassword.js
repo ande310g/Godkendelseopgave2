@@ -1,4 +1,6 @@
-// ForgottenPassword.js
+//Dele af denne kode er lavet med generativ AI
+
+
 // Importerer nødvendige moduler og komponenter fra React og React Native
 import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity } from 'react-native';

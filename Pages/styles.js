@@ -1,4 +1,5 @@
-// styles.js
+//Dele af denne kode er lavet med generativ AI
+
 import { StyleSheet } from 'react-native';
 
 export const globalStyles = StyleSheet.create({

@@ -1,4 +1,5 @@
-// Welcome.js
+//Dele af denne kode er lavet med generativ AI
+
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { globalStyles } from './styles';

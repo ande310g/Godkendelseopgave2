@@ -1,4 +1,5 @@
-// Home.js
+//Dele af denne kode er lavet med generativ AI
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { auth, database } from '../Components/firebase';

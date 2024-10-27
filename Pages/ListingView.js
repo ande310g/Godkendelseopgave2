@@ -1,4 +1,5 @@
-// ListingView.js
+//Dele af denne kode er lavet med generativ AI
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { auth, database } from '../Components/firebase';

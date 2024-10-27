@@ -1,4 +1,5 @@
-// Login.js
+//Dele af denne kode er lavet med generativ AI
+
 import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';

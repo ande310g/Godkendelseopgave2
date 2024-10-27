@@ -1,4 +1,5 @@
-// UserInfo.js
+//Dele af denne kode er lavet med generativ AI
+
 import React, { useState } from 'react';
 import { View, TextInput, Text, Switch, Image, FlatList, Alert, TouchableOpacity, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
